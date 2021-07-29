@@ -5,23 +5,41 @@
 
 # JotForm's Discord Bot
 
-> JotForm's Discord Bot was developed under Podo's supervision! 
+> JotForm's Discord Bot, developed under Podo's supervision! 
+
+## Bot's Features 📝
+
+- [ ] Answer forms.
+- [ ] Create forms.
+- [ ] Get your form's submissons.
+- [ ] Get your form's reports.
+- [ ] Utility commands.
+
+## Bot's Technical Features 💠
+
+- [x] Cool message embeds.
+- [x] Auto permission checks.
+- [x] Sharding.
+- [x] Save users API key for later use so they won't have to enter again. (Encrypted with AES256).
+- [x] Auto discovery and implementation of new commands/events.  
 
 ## Development Environment
 
-- Install dependencies
+First of all install MongoDB locally or pass a development MongoDB database URI to `.env`.
+
+
+- Create `.env` file. You can find the example in [.env.example](.env.example).
+- Install dependencies.
 
 `npm install`
 
-- Create `.env` file. You can find the example in [.env.example](.env.example).
-
-- Run
+- Run.
 
 `npm run dev`
 
 ## Deployment
 
-> TBA.
+> TBA. (Docker or K8s haven't decided yet 😶)
 
 ## License
 
