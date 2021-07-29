@@ -1,0 +1,52 @@
+{
+  "name": "jotform-discord-bot",
+  "version": "1.0.0",
+  "description": "JotForm's Discord Bot to manage your forms! ",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "pretest": "prettier \"*/**/*.js\" --write",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/bw3u/jotform-discord-bot.git"
+  },
+  "keywords": [
+    "JotForm",
+    "JotForm Discord Bot",
+    "Discord"
+  ],
+  "author": "bw3u",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://gitlab.com/bw3u/jotform-discord-bot/issues"
+  },
+  "homepage": "https://gitlab.com/bw3u/jotform-discord-bot#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@sentry/node": "^6.10.0",
+    "@sentry/tracing": "^6.10.0",
+    "ascii-table": "^0.0.9",
+    "axios": "^0.21.1",
+    "chalk": "^4.1.1",
+    "cookie-parser": "^1.4.5",
+    "crypto-js": "^4.1.1",
+    "csurf": "^1.11.0",
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "helmet": "^4.6.0",
+    "mongoose": "^5.13.4",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "eslint": "^7.31.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2"
+  }
+}
