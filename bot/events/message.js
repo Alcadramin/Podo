@@ -20,7 +20,7 @@ module.exports = class MessageEvent extends BotEvent {
     if (message.content.match(new RegExp(`<@!?${bot.user.id}>`)))
       await message.channel.send(
         message.embed
-          .setDescription(`**Use \`${prefix}help\` for more help!**`)
+          .setDescription(`Use \`${prefix}help\` for more help!`)
           .setColor(bot.hex)
       );
 

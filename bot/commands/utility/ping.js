@@ -27,6 +27,7 @@ module.exports = class Ping extends Command {
 
       await msg.edit('Here, got the ping for you:', pingEmbed);
     } catch (err) {
+      console.error(err);
       const errorId = Sentry.captureException(err);
 
       return message.channel.send(
