@@ -1,6 +1,7 @@
 const { BotEvent } = require('../../lib');
 const Sentry = require('@sentry/node');
 const Tracing = require('@sentry/tracing');
+require('dotenv').config();
 
 module.exports = class Ready extends BotEvent {
   constructor() {
@@ -18,7 +19,7 @@ module.exports = class Ready extends BotEvent {
 
     // Error handling
     Sentry.init({
-      dsn: '',
+      dsn: process.env.SENTRY_DSN || '',
       tracesSampleRate: 1.0,
     });
 
