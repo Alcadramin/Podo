@@ -1,6 +1,7 @@
 const { ShardingManager } = require('discord.js');
 const Config = require('./lib/handlers/Config');
 
+// Start sharding manager
 const config = new Config();
 const manager = new ShardingManager('./bot/start.js', {
   execArgv: ['--trace-warnings'],

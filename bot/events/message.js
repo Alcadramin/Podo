@@ -10,8 +10,9 @@ module.exports = class MessageEvent extends BotEvent {
     if (!message.guild) return;
     if (!message.member) await message.guild.members.fetch(message.author);
 
-    // Bot's prefix
-    const prefix = '.';
+    // Database and Prefix
+    if (!message.guild.db) await message.guild.setDB();
+    const prefix = message.guild.db.prefix;
 
     // A safety check
     if (!message.guild.me.hasPermission('SEND_MESSAGES')) return;

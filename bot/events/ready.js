@@ -1,6 +1,15 @@
-const { BotEvent } = require('../../lib');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const Sentry = require('@sentry/node');
 const Tracing = require('@sentry/tracing');
+const express = require('express');
+const { json, urlencoded } = require('express');
+
+const { BotEvent } = require('../../lib');
+const logHander = require('../..//web/middlewares/logHandler');
+const errorHandler = require('../../web/middlewares/errorHandler');
+const notFound = require('../../web/middlewares/notFound');
 require('dotenv').config();
 
 module.exports = class Ready extends BotEvent {
@@ -17,43 +26,57 @@ module.exports = class Ready extends BotEvent {
     });
     bot.hex = '#32a4a8';
 
-    // Error handling
+    const app = express();
+
     Sentry.init({
-      dsn: process.env.SENTRY_DSN || '',
+      dsn: process.env.SENTRY_DSN,
+      integrations: [
+        new Sentry.Integrations.Http({ tracing: true }),
+        new Tracing.Integrations.Express({ app }),
+      ],
+
       tracesSampleRate: 1.0,
     });
 
-    process.on('uncaughtException', (err) => {
-      Sentry.captureException(err);
-      console.log(`Uncaught Exception: ${err.message}`);
-      process.exit(1);
+    app.use(Sentry.Handlers.requestHandler());
+    app.use(Sentry.Handlers.tracingHandler());
+
+    app.use(logHander);
+    app.use(helmet());
+    app.use(cookieParser());
+    app.use(
+      cors({
+        origin: '*',
+        credentials: true,
+        optionsSuccessStatus: 200,
+      })
+    );
+    app.use(json());
+    app.use(urlencoded({ extended: true }));
+
+    // Endpoints should go here.
+    app.get('/', (req, res) => {
+      res.json({
+        message: '🥞',
+      });
     });
 
-    process.on('unhandledRejection', (reason, promise) => {
-      Sentry.captureException(reason + promise);
-      console.log('Unhandled rejection at ', promise, `reason: ${reason}`);
-      process.exit(1);
-    });
+    // Middlewares should go here.
 
-    process.on('exit', (code) => {
-      Sentry.captureEvent(`Process exited with code: ${code}`);
-      console.log(`Process exited with code: ${code}`);
-    });
+    app.use(Sentry.Handlers.errorHandler());
+    app.use(errorHandler);
+    app.use(notFound);
 
-    process.on('SIGTERM', (signal) => {
-      Sentry.captureEvent(`Process ${process.pid} received a SIGTERM signal`);
-      console.log(`Process ${process.pid} received a SIGTERM signal`);
-      process.exit(0);
-    });
+    // Start web services
+    const port = process.env.PORT || 1337;
 
-    process.on('SIGINT', (signal) => {
-      Sentry.captureEvent(`Process ${process.pid} has been interrupted`);
-      console.log(`Process ${process.pid} has been interrupted`);
-      process.exit(0);
+    app.listen(port, () => {
+      console.log(`⚡ API is listening on ${port}`);
     });
 
     module.exports = {
       bot,
+      Sentry,
     };
   }
 };

@@ -1,5 +1,4 @@
 const { Command, Embed } = require('../../../lib');
-
 module.exports = class Login extends Command {
   constructor() {
     super('login', {
@@ -8,11 +7,21 @@ module.exports = class Login extends Command {
   }
 
   async run(message, [key, ...args]) {
+    const userModel = require('../../../lib/models/User');
     const { Sentry } = require('../../events/ready');
     const fetch = require('node-fetch');
 
     try {
-      const author = message.author.id;
+      const user = await userModel.findOne({
+        userId: message.author.id,
+      });
+
+      if (user) {
+        return message.author.send(
+          Embed.success(`You are already logged in! **${user.name}.**`)
+        );
+      }
+
       message.channel.send(
         Embed.success("I've send you a DM, let's talk in private! 🐈")
       );
@@ -26,7 +35,7 @@ module.exports = class Login extends Command {
 
       const login = await message.author.send(
         Embed.success(
-          'Hello, lets get you logged in. You can either login with your **Username/Password** or you can login with **Api Key** that you can obtain from your account settings. Please react in 6 minutes.'
+          'Hello, lets get you logged in. You can either login with your **Username/Password** or you can login with **Api Key** that you can obtain from your account settings. Please react in 5 minutes.'
         )
           .addFields(
             {
@@ -35,7 +44,7 @@ module.exports = class Login extends Command {
               inline: true,
             },
             {
-              name: 'Api Key',
+              name: 'Api Key (recommended)',
               value: 'React to 2️⃣ emoji',
               inline: true,
             }
@@ -49,7 +58,6 @@ module.exports = class Login extends Command {
       //     limit: 100,
       //   })
       //   .then((msg) => {
-      //     //console.log(msg);
       //     msg.forEach((element) => {
       //       console.log(element);
       //       element.delete();
@@ -88,12 +96,14 @@ module.exports = class Login extends Command {
           })
           .then((reply) => {
             credentials.push(reply.first().content);
+          })
+          .catch((err) => {
+            console.error(err);
+            login.reply("You didn't answered in time, please start again.");
           });
 
         login.reply(
-          `You've entered your **Username** as \`*****${credentials[0].slice(
-            -2
-          )}\`.`
+          `You've entered your **Username** as \`${credentials[0]}\`.`
         );
         login.reply('Please give me your **Password**.');
 
@@ -105,6 +115,10 @@ module.exports = class Login extends Command {
           })
           .then((reply) => {
             credentials.push(reply.first().content);
+          })
+          .catch((err) => {
+            console.error(err);
+            login.reply("You didn't answered in time, please start again.");
           });
 
         login.reply(
@@ -121,12 +135,12 @@ module.exports = class Login extends Command {
             .addFields(
               {
                 name: 'Username',
-                value: '*****' + credentials[0].slice(-2),
+                value: credentials[0],
                 inline: true,
               },
               {
                 name: 'Password',
-                value: '*****' + credentials[1].slice(-2),
+                value: `*****${credentials[1].slice(-2)}`,
                 inline: true,
               }
             )
@@ -158,16 +172,18 @@ module.exports = class Login extends Command {
                 .then(async (json) => {
                   if (json.responseCode === 401) {
                     verify.reply(
-                      Embed.error(json.message).setAuthor('Error').addField({
-                        name: 'Error',
-                        value: 'Please try again.',
-                        inline: false,
-                      })
+                      Embed.error(`${json.message}`)
+                        .setAuthor('Error')
+                        .addFields({
+                          name: 'Error',
+                          value: 'Something went wrong. Please try again.',
+                          inline: false,
+                        })
                     );
                     await loginNormalMethod();
                     verifyLogin();
                   } else {
-                    // TODO: Save user API Key to DB.
+                    // TODO: Get and save user API Key to DB. Can't obtain it right now.
                     return verify.reply(
                       Embed.success(`Hello **${json.content.name}**!`)
                         .setAuthor('Success')
@@ -196,6 +212,113 @@ module.exports = class Login extends Command {
           });
       };
 
+      const loginApiKeyMethod = async () => {
+        login.reply('Please give me your **API Key**.');
+        await login.channel
+          .awaitMessages(messageFilter, {
+            max: 1,
+            time: 60000,
+            errors: ['time'],
+          })
+          .then((reply) => {
+            credentials.push(reply.first().content);
+          })
+          .catch((err) => {
+            console.error(err);
+            login.reply("You didn't answered in time, please start again.");
+          });
+
+        login.reply(
+          `You have entered your **API Key** as \`${credentials[0]}\``
+        );
+      };
+
+      const verifyApiLogin = async () => {
+        const verifyApi = await message.author.send(
+          Embed.success('Here is your info, is this correct?')
+            .setAuthor('Verify Login Information')
+            .addFields({
+              name: 'Api Key',
+              value: credentials[0],
+              inline: false,
+            })
+        );
+
+        for (const emoji of verifyEmojiList) {
+          verifyApi.react(emoji);
+        }
+
+        verifyApi
+          .awaitReactions(verifyFilter, {
+            max: 1,
+            time: 60000,
+            errors: ['time'],
+          })
+          .then(async (collected) => {
+            if (collected.first().emoji.name !== '\u2705') {
+              await loginApiKeyMethod();
+              verifyApiLogin();
+            } else {
+              await fetch(`https://api.jotform.com/user`, {
+                method: 'GET',
+                headers: {
+                  APIKEY: credentials[0],
+                },
+              })
+                .then((res) => res.json())
+                .then(async (json) => {
+                  if (json.responseCode === 401) {
+                    verifyApi.reply(
+                      Embed.error(`${json.message}`)
+                        .setAuthor('Error')
+                        .addFields({
+                          name: 'Error',
+                          value: 'Something went wrong. Please try again.',
+                          inline: false,
+                        })
+                    );
+                    await loginApiKeyMethod();
+                    verifyApiKey();
+                  } else {
+                    await userModel
+                      .create({
+                        userId: message.author.id,
+                        name: json.content.name,
+                        username: json.content.username,
+                        email: json.content.email,
+                        status: json.content.status,
+                        apiKey: credentials[0],
+                      })
+                      .then((data) => {
+                        return verifyApi.reply(
+                          Embed.success(`Hello **${data.name}**!`)
+                            .setAuthor('Success')
+                            .addFields(
+                              {
+                                name: 'Email',
+                                value: data.email,
+                                inline: true,
+                              },
+                              {
+                                name: 'Username',
+                                value: data.username,
+                                inline: true,
+                              },
+                              {
+                                name: 'Information',
+                                value:
+                                  'You are successfully logged in. Your account is bind to your Discord ID, you do not have to login again! 😸',
+                                inline: false,
+                              }
+                            )
+                        );
+                      });
+                  }
+                });
+            }
+          });
+      };
+
       login
         .awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
         .then(async (collected) => {
@@ -207,10 +330,12 @@ module.exports = class Login extends Command {
             await verifyLogin();
           } else {
             login.reply("You've selected **API** login method.");
-            // TODO: Implement login with API Key.
+            await loginApiKeyMethod();
+            await verifyApiLogin();
           }
         })
-        .catch((collected) => {
+        .catch((err) => {
+          console.error(err);
           login.reply("You didn't reacted, please start again.");
         });
     } catch (err) {

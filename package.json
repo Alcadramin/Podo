@@ -24,13 +24,14 @@
   },
   "homepage": "https://gitlab.com/bw3u/jotform-discord-bot#readme",
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "@sentry/node": "^6.10.0",
     "@sentry/tracing": "^6.10.0",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^16.4.10",
     "ascii-table": "^0.0.9",
-    "axios": "^0.21.1",
     "chalk": "^4.1.1",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "csurf": "^1.11.0",
     "discord.js": "^12.5.3",
@@ -38,10 +39,10 @@
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "helmet": "^4.6.0",
-    "mongoose": "^5.13.4",
+    "joi": "^17.4.2",
+    "mongoose": "^5.13.5",
     "morgan": "^1.10.0",
-    "node-fetch": "^2.6.1",
-    "qs": "^6.7.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
