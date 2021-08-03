@@ -37,7 +37,7 @@ module.exports = class Purge extends Command {
         .send(
           Embed.success(
             fetched.size +
-              ` deleted messages by **${message.author.tag}**. This message will delete itself in 30 seconds.`
+              ` deleted messages by **${message.author.tag}**. This message will delete itself in few seconds.`
           )
         )
         .then((msg) => {

@@ -31,7 +31,7 @@ module.exports = class Login extends Command {
       }
 
       const emojiList = ['\u0031\u20E3', '\u0032\u20E3'];
-      const verifyEmojiList = ['\u2705', '\u274E'];
+      const verifyEmojiList = ['\u274E', '\u2705'];
 
       const login = await message.author.send(
         Embed.success(
