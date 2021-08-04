@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./layout/head'); %>
+    <script src="js/sdk.js"></script>
+  </head>
+  <body
+    class="with-custom-webkit-scrollbars with-custom-css-scrollbars"
+    data-dm-shortcut-enabled="true"
+    data-set-preferred-mode-onload="true"
+  >
+    <div class="page-wrapper with-navbar with-navbar-fixed-bottom">
+      <%- include('./layout/header'); %>
+
+      <div class="content-wrapper">
+        <div class="d-flex justify-content-center">
+          <div class="w-600 mw-full">
+            <div class="card p-0">
+              <img
+                src="img/podo-1.gif"
+                class="img-fluid rounded-top"
+                alt="PodoAnimation1"
+              />
+              <div class="content">
+                <h2 class="content-title">
+                  Authorize your account to getting started with Podo!
+                </h2>
+                <div class="text-center">
+                  <span class="text-muted">
+                    You will be notified on Discord after logging in.
+                  </span>
+                </div>
+                <hr />
+                <div class="text-center mt-20">
+                  <button
+                    class="btn btn-success btn-sm"
+                    type="button"
+                    id="login"
+                  >
+                    Login with JotForm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const discordId = '<%= discordId %>';
+        const loginButton = document.querySelector('#login');
+
+        loginButton.addEventListener('click', loginJotForm);
+
+        let apiKey = '';
+
+        async function loginJotForm() {
+          await JF.login(async function () {
+            apiKey = await JF.getAPIKey();
+            window.location.replace(
+              `/oauth/result?apiKey=${apiKey}&discordId=${discordId}`
+            );
+          });
+        }
+      </script>
+      <%- include('./layout/footer'); %>
+    </div>
+  </body>
+</html>

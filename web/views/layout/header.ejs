@@ -1,0 +1,31 @@
+<div class="sticky-alerts"></div>
+
+<nav class="navbar">
+  <!-- Navbar brand -->
+  <a href="https://jotform.com" class="navbar-brand">
+    <img
+      src="https://www.jotform.com/resources/assets/logo/jotform-icon-transparent-560x560.png"
+      alt="JotForm"
+    />
+    Podo
+  </a>
+  <!-- Navbar text -->
+  <span class="navbar-text ml-5">
+    <!-- ml-5 = margin-left: 0.5rem (5px) -->
+    <span class="badge text-monospace">v1.0</span>
+    <!-- text-monospace = font-family shifted to monospace -->
+  </span>
+  <!-- Navbar nav -->
+  <ul class="navbar-nav ml-auto">
+    <!-- ml-auto = margin-left: auto -->
+    <li class="nav-item <% if (nav === 'home') { %> active <% } %>">
+      <a href="/" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item <% if (nav === 'commands') { %> active <% } %>">
+      <a href="/commands" class="nav-link">Commands</a>
+    </li>
+    <li class="nav-item <% if (nav === 'about') { %> active <% } %>">
+      <a href="/about" class="nav-link">About</a>
+    </li>
+  </ul>
+</nav>

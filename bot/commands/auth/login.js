@@ -84,134 +84,6 @@ module.exports = class Login extends Command {
 
       const messageFilter = (user) => user.author.id === message.author.id;
 
-      const credentials = [];
-
-      const loginNormalMethod = async () => {
-        login.reply('Please give me your **Username**.');
-        await login.channel
-          .awaitMessages(messageFilter, {
-            max: 1,
-            time: 60000,
-            errors: ['time'],
-          })
-          .then((reply) => {
-            credentials.push(reply.first().content);
-          })
-          .catch((err) => {
-            console.error(err);
-            login.reply("You didn't answered in time, please start again.");
-          });
-
-        login.reply(
-          `You've entered your **Username** as \`${credentials[0]}\`.`
-        );
-        login.reply('Please give me your **Password**.');
-
-        await login.channel
-          .awaitMessages(messageFilter, {
-            max: 1,
-            time: 60000,
-            errors: ['time'],
-          })
-          .then((reply) => {
-            credentials.push(reply.first().content);
-          })
-          .catch((err) => {
-            console.error(err);
-            login.reply("You didn't answered in time, please start again.");
-          });
-
-        login.reply(
-          `You've entered your **Password** as \`*****${credentials[1].slice(
-            -2
-          )}\``
-        );
-      };
-
-      const verifyLogin = async () => {
-        const verify = await message.author.send(
-          Embed.success('Here is your info, is this correct?')
-            .setAuthor('Verify Login Information')
-            .addFields(
-              {
-                name: 'Username',
-                value: credentials[0],
-                inline: true,
-              },
-              {
-                name: 'Password',
-                value: `*****${credentials[1].slice(-2)}`,
-                inline: true,
-              }
-            )
-        );
-
-        for (const emoji of verifyEmojiList) {
-          verify.react(emoji);
-        }
-
-        verify
-          .awaitReactions(verifyFilter, {
-            max: 1,
-            time: 60000,
-            errors: ['time'],
-          })
-          .then(async (collected) => {
-            if (collected.first().emoji.name !== '\u2705') {
-              await loginNormalMethod();
-              verifyLogin();
-            } else {
-              await fetch('https://api.jotform.com/user/login', {
-                method: 'POST',
-                body: `username=${credentials[0]}&password=${credentials[1]}&access=Full&appName=Podo`,
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-              })
-                .then((res) => res.json())
-                .then(async (json) => {
-                  if (json.responseCode === 401) {
-                    verify.reply(
-                      Embed.error(`${json.message}`)
-                        .setAuthor('Error')
-                        .addFields({
-                          name: 'Error',
-                          value: 'Something went wrong. Please try again.',
-                          inline: false,
-                        })
-                    );
-                    await loginNormalMethod();
-                    verifyLogin();
-                  } else {
-                    // TODO: Get and save user API Key to DB. Can't obtain it right now.
-                    return verify.reply(
-                      Embed.success(`Hello **${json.content.name}**!`)
-                        .setAuthor('Success')
-                        .addFields(
-                          {
-                            name: 'Email',
-                            value: json.content.email,
-                            inline: true,
-                          },
-                          {
-                            name: 'Username',
-                            value: json.content.username,
-                            inline: true,
-                          },
-                          {
-                            name: 'Information',
-                            value:
-                              'You are successfully logged in. Your account is bind to your Discord ID, you do not have to login again! 😸',
-                            inline: false,
-                          }
-                        )
-                    );
-                  }
-                });
-            }
-          });
-      };
-
       const loginApiKeyMethod = async () => {
         login.reply('Please give me your **API Key**.');
         await login.channel
@@ -319,6 +191,19 @@ module.exports = class Login extends Command {
           });
       };
 
+      const loginNormalMethod = () => {
+        return login.reply(
+          Embed.success(
+            'Click the link below to login. You will get a DM when you are authorized.'
+          )
+            .setAuthor('Login to JotForm')
+            .addField(
+              'Login:',
+              `http://localhost:1337/oauth/login?discordId=${message.author.id}`
+            )
+        );
+      };
+
       login
         .awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
         .then(async (collected) => {
@@ -327,7 +212,6 @@ module.exports = class Login extends Command {
           if (reaction.emoji.name === '\u0031\u20E3') {
             login.reply("You've selected **Username/Password** login method.");
             await loginNormalMethod();
-            await verifyLogin();
           } else {
             login.reply("You've selected **API** login method.");
             await loginApiKeyMethod();
