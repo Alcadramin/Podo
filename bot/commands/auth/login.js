@@ -9,7 +9,7 @@ module.exports = class Login extends Command {
   async run(message, [key, ...args]) {
     const userModel = require('../../../lib/models/User');
     const { Sentry } = require('../../events/ready');
-    const fetch = require('node-fetch');
+    const { JotForm } = require('../../../jotform-sdk');
 
     try {
       const user = await userModel.findOne({
@@ -82,6 +82,8 @@ module.exports = class Login extends Command {
         );
       };
 
+      const credentials = [];
+
       const messageFilter = (user) => user.author.id === message.author.id;
 
       const loginApiKeyMethod = async () => {
@@ -131,61 +133,58 @@ module.exports = class Login extends Command {
               await loginApiKeyMethod();
               verifyApiLogin();
             } else {
-              await fetch(`https://api.jotform.com/user`, {
-                method: 'GET',
-                headers: {
-                  APIKEY: credentials[0],
-                },
-              })
-                .then((res) => res.json())
-                .then(async (json) => {
-                  if (json.responseCode === 401) {
-                    verifyApi.reply(
-                      Embed.error(`${json.message}`)
-                        .setAuthor('Error')
-                        .addFields({
-                          name: 'Error',
-                          value: 'Something went wrong. Please try again.',
-                          inline: false,
-                        })
-                    );
-                    await loginApiKeyMethod();
-                    verifyApiKey();
-                  } else {
-                    await userModel
-                      .create({
-                        userId: message.author.id,
-                        name: json.content.name,
-                        username: json.content.username,
-                        email: json.content.email,
-                        status: json.content.status,
-                        apiKey: credentials[0],
+              const JF = new JotForm();
+              JF.setApiKey(credentials[0]);
+
+              JF.user
+                .getUser()
+                .then(async (response) => {
+                  await userModel
+                    .create({
+                      userId: message.author.id,
+                      name: response.content.name,
+                      username: response.content.username,
+                      email: response.content.email,
+                      status: response.content.status,
+                      apiKey: credentials[0],
+                    })
+                    .then((data) => {
+                      return verifyApi.reply(
+                        Embed.success(`Hello **${data.name}**!`)
+                          .setAuthor('Success')
+                          .addFields(
+                            {
+                              name: 'Email',
+                              value: data.email,
+                              inline: true,
+                            },
+                            {
+                              name: 'Username',
+                              value: data.username,
+                              inline: true,
+                            },
+                            {
+                              name: 'Information',
+                              value:
+                                'You are successfully logged in. Your account is bind to your Discord ID, you do not have to login again! 😸',
+                              inline: false,
+                            }
+                          )
+                      );
+                    });
+                })
+                .catch(() => {
+                  verifyApi.reply(
+                    Embed.error(`${json.message}`)
+                      .setAuthor('Error')
+                      .addFields({
+                        name: 'Error',
+                        value: 'Something went wrong. Please try again.',
+                        inline: false,
                       })
-                      .then((data) => {
-                        return verifyApi.reply(
-                          Embed.success(`Hello **${data.name}**!`)
-                            .setAuthor('Success')
-                            .addFields(
-                              {
-                                name: 'Email',
-                                value: data.email,
-                                inline: true,
-                              },
-                              {
-                                name: 'Username',
-                                value: data.username,
-                                inline: true,
-                              },
-                              {
-                                name: 'Information',
-                                value:
-                                  'You are successfully logged in. Your account is bind to your Discord ID, you do not have to login again! 😸',
-                                inline: false,
-                              }
-                            )
-                        );
-                      });
-                  }
+                  );
+                  await loginApiKeyMethod();
+                  verifyApiKey();
                 });
             }
           });

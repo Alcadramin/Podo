@@ -9,7 +9,8 @@ const { json, urlencoded } = require('express');
 const redis = require('redis');
 const crypto = require('crypto');
 
-const { BotEvent } = require('../../lib');
+const { BotEvent, Embed } = require('../../lib');
+const userModel = require('../../lib/models/User');
 const logHander = require('../..//web/middlewares/logHandler');
 const errorHandler = require('../../web/middlewares/errorHandler');
 const notFound = require('../../web/middlewares/notFound');
@@ -126,7 +127,17 @@ module.exports = class Ready extends BotEvent {
     console.log('🔷 Redis subscriber is ready.');
 
     subscriber.on('message', (channel, message) => {
-      console.log(`Recieved data: ${message}`);
+      json = JSON.parse(message);
+      userModel.create({
+        userId: json.discordId,
+        name: json.name,
+        apiKey: json.apiKey,
+        username: json.username,
+        status: json.status,
+      });
+
+      const user = bot.users.cache.get(json.discordId);
+      user.send(Embed.success(`Success! You are logged in ${json.name}`));
     });
 
     subscriber.subscribe('user-login');
