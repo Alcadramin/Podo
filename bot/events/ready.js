@@ -7,10 +7,10 @@ const Tracing = require('@sentry/tracing');
 const express = require('express');
 const { json, urlencoded } = require('express');
 const redis = require('redis');
-const crypto = require('crypto');
 
 const { BotEvent, Embed } = require('../../lib');
 const userModel = require('../../lib/models/User');
+const submissionModel = require('../../lib/models/SubmissionHooks');
 const logHander = require('../..//web/middlewares/logHandler');
 const errorHandler = require('../../web/middlewares/errorHandler');
 const notFound = require('../../web/middlewares/notFound');
@@ -34,24 +34,14 @@ module.exports = class Ready extends BotEvent {
     const app = express();
 
     app.use((req, res, next) => {
-      res.locals.nonce = crypto.randomBytes(16).toString('hex');
-      next();
-    });
-
-    app.use((req, res, next) => {
       contentSecurityPolicy({
         useDefaults: true,
         directives: {
-          defaultSrc: [
-            "'self'",
-            `'nonce-${res.locals.nonce}'`,
-            'https://js.jotform.com/JotForm.js',
-            'https://www.jotform.com',
-            'https://cdn.jsdelivr.net',
-          ],
+          defaultSrc: ['*'],
           scriptSrc: [
             "'self'",
             "'unsafe-inline'",
+            "'unsafe-eval'",
             'https://www.jotform.com',
             'https://cdn.jsdelivr.net',
           ],
@@ -74,6 +64,7 @@ module.exports = class Ready extends BotEvent {
     app.use(express.static(process.cwd() + '/web/public'));
     app.set('views', process.cwd() + '/web/views/');
     app.set('view engine', 'ejs');
+    app.set('trust proxy', 1);
 
     try {
       Sentry.init({
@@ -126,21 +117,58 @@ module.exports = class Ready extends BotEvent {
 
     console.log('🔷 Redis subscriber is ready.');
 
-    subscriber.on('message', (channel, message) => {
-      json = JSON.parse(message);
-      userModel.create({
-        userId: json.discordId,
-        name: json.name,
-        apiKey: json.apiKey,
-        username: json.username,
-        status: json.status,
-      });
+    subscriber.on('message', async (channel, message) => {
+      if (channel === 'user-login') {
+        const u = JSON.parse(message);
 
-      const user = bot.users.cache.get(json.discordId);
-      user.send(Embed.success(`Success! You are logged in ${json.name}`));
+        const user = await userModel.findOne({
+          userId: u.discordId,
+        });
+
+        if (!user) {
+          await userModel.create({
+            userId: u.discordId,
+            name: u.name,
+            apiKey: u.apiKey,
+            username: u.username,
+            status: u.status,
+          });
+          const discordUser = await bot.users.cache.get(u.discordId);
+          await discordUser.send(
+            Embed.success(`Success! You are logged in ${u.name}`)
+          );
+        }
+      }
+
+      if (channel === 'submission-hooks') {
+        const s = JSON.parse(message);
+        const questions = [];
+        const answers = [];
+
+        await s.pretty.split(',').map((el) => {
+          el = el.split(':');
+          questions.push(el[0]);
+          answers.push(el[1]);
+        });
+
+        const hook = await submissionModel.findOne({
+          formId: s.formID,
+        });
+
+        if (hook) {
+          const hookChannel = await bot.channels.cache.get(hook.channelId);
+          const createEmbed = Embed.success(
+            'New submission has arrived!'
+          ).setAuthor(`${s.formTitle}`);
+          for (let i = 0; i < questions.length; i++) {
+            createEmbed.addField(`${questions[i]}`, `${answers[i]}`);
+          }
+          await hookChannel.send(createEmbed);
+        }
+      }
     });
 
-    subscriber.subscribe('user-login');
+    subscriber.subscribe(['user-login', 'submission-hooks']);
 
     module.exports = {
       bot,

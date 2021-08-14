@@ -173,7 +173,7 @@ module.exports = class Login extends Command {
                       );
                     });
                 })
-                .catch(() => {
+                .catch(async () => {
                   verifyApi.reply(
                     Embed.error(`${json.message}`)
                       .setAuthor('Error')

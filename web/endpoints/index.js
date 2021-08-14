@@ -1,4 +1,5 @@
 const oauth = require('./oauth');
+const hooks = require('./hooks');
 
 module.exports = (app) => {
   app.get('/', (req, res, next) => {
@@ -13,4 +14,5 @@ module.exports = (app) => {
   });
 
   app.use('/oauth', oauth);
+  app.use('/hooks', hooks);
 };

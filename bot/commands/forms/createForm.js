@@ -16,15 +16,16 @@ module.exports = class CreateForm extends Command {
 
     try {
       const user = await userModel.findOne({ userId: message.author.id });
-      const apiKey = await user.decryptKey(user.apiKey);
 
-      if (!apiKey) {
+      if (!user) {
         return message.channel.send(
           Embed.error(
             'You should login first! You can login with `login` command!'
           ).setAuthor('Error')
         );
       }
+
+      const apiKey = await user.decryptKey(user.apiKey);
 
       const JF = new JotForm();
       JF.setApiKey(apiKey);

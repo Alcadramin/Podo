@@ -12,13 +12,12 @@ module.exports = class MyForms extends Command {
   async run(message, [key, ...args]) {
     const userModel = require('../../../lib/models/User');
     const { Sentry } = require('../../events/ready');
-    const fetch = require('node-fetch');
+    const { JotForm } = require('../../../jotform-sdk');
 
     try {
       const user = await userModel.findOne({ userId: message.author.id });
-      const apiKey = await user.decryptKey(user.apiKey);
 
-      if (!apiKey) {
+      if (!user) {
         return message.channel.send(
           Embed.error(
             'You should login first! You can login with `login` command!'
@@ -26,31 +25,33 @@ module.exports = class MyForms extends Command {
         );
       }
 
-      await fetch('https://api.jotform.com/user/forms', {
-        method: 'GET',
-        headers: {
-          APIKEY: apiKey,
-        },
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          if (json.responseCode === 200) {
-            const content = json.content;
-            const embed =
-              Embed.success(`I got your forms! 🐱`).setAuthor('My Forms');
+      const apiKey = await user.decryptKey(user.apiKey);
 
-            content.map((el) => {
-              embed.addFields(
-                {
-                  name: el.title,
-                  value: `${el.url} (${el.status})`,
-                },
-                { name: 'Form ID', value: el.id }
-              );
-            });
+      const JF = new JotForm();
+      JF.setApiKey(apiKey);
 
-            return message.channel.send(embed);
-          }
+      await JF.user
+        .getForms()
+        .then((res) => {
+          const createEmbed =
+            Embed.success(`I got your forms! 🐱`).setAuthor('My Forms');
+
+          res.content.map((el) => {
+            createEmbed.addField(
+              `${el.title || 'No Title'} - ${el.status}`,
+              `${el.url}`
+            );
+          });
+
+          return message.channel.send(createEmbed);
+        })
+        .catch((err) => {
+          console.log(err);
+          return message.channel.send(
+            Embed.error('Something went wrong. Please try again.').setAuthor(
+              'Error'
+            )
+          );
         });
     } catch (err) {
       console.error(err);
