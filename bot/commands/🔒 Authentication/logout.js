@@ -3,7 +3,7 @@ const { Command, Embed } = require('../../../lib');
 module.exports = class Logout extends Command {
   constructor() {
     super('logout', {
-      description: 'Logout from your account',
+      description: 'Logout from your account.',
     });
   }
 

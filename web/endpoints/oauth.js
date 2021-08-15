@@ -59,6 +59,7 @@ router.get('/result', async (req, res, next) => {
           publisher.publish('user-login', JSON.stringify(data));
 
           res.render('../views/auth-result', {
+            nav: 'result',
             status: 'success',
             name: json.content.name,
             apiKey,

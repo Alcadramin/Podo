@@ -46,7 +46,11 @@ module.exports = class Ready extends BotEvent {
             'https://cdn.jsdelivr.net',
           ],
           objectSrc: ["'none'"],
-          imgSrc: ["'self'", 'https://www.jotform.com'],
+          imgSrc: [
+            "'self'",
+            'https://www.jotform.com',
+            'https://img.shields.io',
+          ],
           upgradeInsecureRequests: [],
         },
         reportOnly: false,
@@ -115,8 +119,6 @@ module.exports = class Ready extends BotEvent {
       throw new Error(err);
     });
 
-    console.log('🔷 Redis subscriber is ready.');
-
     subscriber.on('message', async (channel, message) => {
       if (channel === 'user-login') {
         const u = JSON.parse(message);
@@ -167,13 +169,23 @@ module.exports = class Ready extends BotEvent {
         }
       }
     });
-
     subscriber.subscribe(['user-login', 'submission-hooks']);
+    console.log('🔷 Redis subscriber is ready.');
+
+    const redisClient = redis.createClient();
+    redisClient.on('error', (err) => {
+      throw new Error(err);
+    });
+
+    const commands = await bot.commands.array();
+
+    redisClient.set('commands', JSON.stringify(commands));
+
+    console.log('🔷 Redis client is ready.');
 
     module.exports = {
       bot,
       Sentry,
-      subscriber,
     };
   }
 };

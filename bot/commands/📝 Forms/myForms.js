@@ -2,10 +2,9 @@ const { Command, Embed } = require('../../../lib');
 
 module.exports = class MyForms extends Command {
   constructor() {
-    super('myforms', {
+    super('myForms', {
       description:
         'Get list of your forms. You can use this command to find form IDs.',
-      usage: '',
     });
   }
 

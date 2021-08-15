@@ -2,21 +2,21 @@
 
 <nav class="navbar">
   <!-- Navbar brand -->
-  <a href="https://jotform.com" class="navbar-brand">
+  <a href="https://jotform.com" class="navbar-brand ml-10 ml-sm-15">
     <img
       src="https://www.jotform.com/resources/assets/logo/jotform-icon-transparent-560x560.png"
       alt="JotForm"
     />
     Podo
+    <!-- Navbar text -->
+    <span class="navbar-text ml-5">
+      <!-- ml-5 = margin-left: 0.5rem (5px) -->
+      <span class="badge text-monospace">v1.0</span>
+      <!-- text-monospace = font-family shifted to monospace -->
+    </span>
   </a>
-  <!-- Navbar text -->
-  <span class="navbar-text ml-5">
-    <!-- ml-5 = margin-left: 0.5rem (5px) -->
-    <span class="badge text-monospace">v1.0</span>
-    <!-- text-monospace = font-family shifted to monospace -->
-  </span>
   <!-- Navbar nav -->
-  <ul class="navbar-nav ml-auto">
+  <ul class="navbar-nav hidden-sm-and-down">
     <!-- ml-auto = margin-left: auto -->
     <li class="nav-item <% if (nav === 'home') { %> active <% } %>">
       <a href="/" class="nav-link">Home</a>
@@ -24,8 +24,29 @@
     <li class="nav-item <% if (nav === 'commands') { %> active <% } %>">
       <a href="/commands" class="nav-link">Commands</a>
     </li>
-    <li class="nav-item <% if (nav === 'about') { %> active <% } %>">
-      <a href="/about" class="nav-link">About</a>
-    </li>
   </ul>
+  <div class="navbar-content ml-auto">
+    <!-- Github button container 1 start -->
+    <div class="pt-5 mr-5 d-none d-lg-inline-block">
+      <a
+        href="http://gitlab.com/bw3u/podo"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://img.shields.io/badge/GitLab-AGPL--3.0-blue?url=https://gitlab.com/bw3u/podo&logo=gitlab&style=for-the-badge"
+          alt="gitlab-badge"
+        />
+      </a>
+    </div>
+
+    <button
+      class="btn btn-action mr-5"
+      type="button"
+      onclick="halfmoon.toggleDarkMode()"
+      aria-label="Toggle dark mode"
+    >
+      <i class="far fa-moon" aria-hidden="true"></i>
+    </button>
+  </div>
 </nav>

@@ -3,8 +3,50 @@
   <head>
     <%- include('./layout/head'); %>
   </head>
-  <body>
-    <div class="container">You are authorized! Welcome <%= name %>.</div>
+  <body
+    class="with-custom-webkit-scrollbars with-custom-css-scrollbars"
+    data-dm-shortcut-enabled="true"
+    data-set-preferred-mode-onload="true"
+  >
+    <div class="page-wrapper with-navbar with-navbar-fixed-bottom">
+      <%- include('./layout/header'); %>
+
+      <div class="content-wrapper">
+        <div class="d-flex justify-content-center">
+          <div class="w-600 mw-full">
+            <div class="card p-0">
+              <img
+                src="img/podo-2.gif"
+                class="img-fluid rounded-top"
+                alt="PodoAnimation1"
+              />
+              <div class="content">
+                <h2 class="content-title">Success!</h2>
+                <div class="text-center">
+                  <span class="text-muted">
+                    Welcome <strong><%= name %></strong>. You are authorized,
+                    you should have received a DM from me now! You can close
+                    this window 🐱.
+                  </span>
+                </div>
+                <div class="text-center mt-20">
+                  <button
+                    class="btn btn-success btn-sm"
+                    type="button"
+                    onclick="window.location.replace('/')"
+                  >
+                    Go Home
+                  </button>
+                </div>
+                <hr />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%- include('./layout/footer'); %>
+    </div>
 
     <script>
       const apiKey = '<%= apiKey %>';

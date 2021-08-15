@@ -1,8 +1,9 @@
 const { Command, Embed } = require('../../../lib');
+
 module.exports = class Login extends Command {
   constructor() {
     super('login', {
-      description: 'Login to JotForm',
+      description: 'Login to JotForm.',
     });
   }
 

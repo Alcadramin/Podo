@@ -1,11 +1,9 @@
 const { Command, Embed } = require('../../../lib');
 
-// Change 'Template' to Command name.
 module.exports = class CreateForm extends Command {
   constructor() {
-    super('createform', {
+    super('createForm', {
       description: 'Create a form!',
-      usage: '',
     });
   }
 
@@ -508,7 +506,7 @@ module.exports = class CreateForm extends Command {
         .then((collected) => {
           if (collected.first().emoji.name !== '\u2705') {
             return form.reply(
-              'Mhmm, okay you can use the `.createform` command when you are ready.'
+              'Mhmm, okay you can use the `!createform` command when you are ready.'
             );
           } else {
             createQuestion();

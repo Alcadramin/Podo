@@ -1,18 +1,19 @@
 const oauth = require('./oauth');
 const hooks = require('./hooks');
+const commands = require('./commands');
 
 module.exports = (app) => {
   app.get('/', (req, res, next) => {
-    res.render('../views/index', {
-      nav: 'home',
-    });
-  });
-  app.get('/about', (req, res, next) => {
-    res.render('../views/about', {
-      nav: 'about',
-    });
+    try {
+      res.render('../views/index', {
+        nav: 'home',
+      });
+    } catch (error) {
+      next(error);
+    }
   });
 
+  app.use('/commands', commands);
   app.use('/oauth', oauth);
   app.use('/hooks', hooks);
 };

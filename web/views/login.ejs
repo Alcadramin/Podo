@@ -46,24 +46,24 @@
         </div>
       </div>
 
-      <script>
-        const discordId = '<%= discordId %>';
-        const loginButton = document.querySelector('#login');
-
-        loginButton.addEventListener('click', loginJotForm);
-
-        let apiKey = '';
-
-        async function loginJotForm() {
-          await JF.login(async function () {
-            apiKey = await JF.getAPIKey();
-            window.location.replace(
-              `/oauth/result?apiKey=${apiKey}&discordId=${discordId}`
-            );
-          });
-        }
-      </script>
       <%- include('./layout/footer'); %>
     </div>
+    <script>
+      const discordId = '<%= discordId %>';
+      const loginButton = document.querySelector('#login');
+
+      loginButton.addEventListener('click', loginJotForm);
+
+      let apiKey = '';
+
+      async function loginJotForm() {
+        await JF.login(async function () {
+          apiKey = await JF.getAPIKey();
+          window.location.replace(
+            `/oauth/result?apiKey=${apiKey}&discordId=${discordId}`
+          );
+        });
+      }
+    </script>
   </body>
 </html>
