@@ -460,7 +460,9 @@ module.exports = class CreateForm extends Command {
                     thanktext:
                       'Thank you, your submission has been received.! ✅',
                     activeRedirect: 'thanktext',
-                    styles: 'defaultV2',
+                    styles: 'nova',
+                    themeID: '5e6b428acc8c4e222d1beb91',
+                    defaultTheme: 'v2',
                   },
                 })
                 .then((response) => {
@@ -475,7 +477,7 @@ module.exports = class CreateForm extends Command {
                         },
                         {
                           name: 'Editor URL (You can edit your from here.)',
-                          value: `https://jotform.com/build/${response.content.id}`,
+                          value: `https://www.jotform.com/build/${response.content.id}`,
                         }
                       )
                       .setColor('#44c902')
