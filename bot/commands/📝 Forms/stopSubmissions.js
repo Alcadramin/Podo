@@ -75,6 +75,7 @@ module.exports = class stopSubmissions extends Command {
         })
         .catch(async (err) => {
           console.log(err);
+          Sentry.captureException(err);
           await submissionModel.findOneAndDelete({
             formId: formId,
           });
@@ -104,6 +105,7 @@ module.exports = class stopSubmissions extends Command {
           })
           .catch((err) => {
             console.log(err);
+            Sentry.captureException(err);
             return message.channel.send(
               Embed.error(
                 '\u274E Something went wrong. Please try again.'

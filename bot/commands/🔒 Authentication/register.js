@@ -66,6 +66,7 @@ module.exports = class Register extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -93,6 +94,7 @@ module.exports = class Register extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -120,6 +122,7 @@ module.exports = class Register extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -149,6 +152,7 @@ module.exports = class Register extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );

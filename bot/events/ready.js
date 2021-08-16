@@ -80,6 +80,7 @@ module.exports = class Ready extends BotEvent {
         integrations: [
           new Sentry.Integrations.Http({ tracing: true }),
           new Tracing.Integrations.Express({ app }),
+          new Tracing.Integrations.Mongo({ useMongoose: true }),
         ],
 
         tracesSampleRate: 1.0,
@@ -101,11 +102,9 @@ module.exports = class Ready extends BotEvent {
     app.use(urlencoded({ extended: true }));
 
     // Endpoints should go here.
-
     mountRoutes(app);
 
     // Middlewares should go here.
-
     app.use(notFound);
     app.use(Sentry.Handlers.errorHandler());
     app.use(errorHandler);
@@ -114,12 +113,46 @@ module.exports = class Ready extends BotEvent {
     const port = process.env.PORT;
 
     if (process.env.NODE_ENV === 'development') {
-      app.listen(1337, () => {
+      app.listen(port || 1337, () => {
         console.log(
-          `🔶 Web services are listening on http://localhost:${port}. Or on http://${process.env.DOMAIN}.`
+          `🔶 Web services are listening on http://localhost:${port} or on http://${process.env.DOMAIN}.`
         );
       });
     } else if (process.env.NODE_ENV === 'production') {
+      // Capture crashes etc. Docker will restart the application on crash no worries ¯\_(ツ)_/¯.
+      process.on('uncaughtException', (err) => {
+        Sentry.captureException(err);
+        console.log(`Uncaught Exception: ${err.message}`);
+        process.exit(1);
+      });
+
+      process.on('unhandledRejection', (reason, promise) => {
+        Sentry.captureException(reason + promise);
+        console.log('Unhandled rejection at ', promise, `reason: ${reason}`);
+        process.exit(1);
+      });
+
+      process.on('exit', (code) => {
+        Sentry.captureEvent(`Process exited with code: ${code}`);
+        console.log(`Process exited with code: ${code}`);
+      });
+
+      process.on('SIGTERM', (signal) => {
+        Sentry.captureEvent(
+          `Process ${process.pid} received a SIGTERM signal - ${signal}`
+        );
+        console.log(`Process ${process.pid} received a SIGTERM signal`);
+        process.exit(0);
+      });
+
+      process.on('SIGINT', (signal) => {
+        Sentry.captureEvent(
+          `Process ${process.pid} has been interrupted - ${signal}`
+        );
+        console.log(`Process ${process.pid} has been interrupted`);
+        process.exit(0);
+      });
+
       // Use Express and native HTTP & HTTPS services with Let's Encrypt SSL.
       if (process.env.METHOD === 'express') {
         const fs = require('fs');

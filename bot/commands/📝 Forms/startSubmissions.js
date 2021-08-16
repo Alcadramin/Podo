@@ -100,6 +100,7 @@ module.exports = class startSubmissions extends Command {
         })
         .catch((err) => {
           console.log(err);
+          Sentry.captureException(err);
           return message.channel.send(
             Embed.error('\u274E Form does not exist!').addField(
               'Form ID',
@@ -131,6 +132,7 @@ module.exports = class startSubmissions extends Command {
         })
         .catch((err) => {
           console.log(err);
+          Sentry.captureException(err);
           return message.channel.send(
             Embed.error(
               '\u274E Something went wrong. Please try again.'

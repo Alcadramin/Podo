@@ -11,7 +11,7 @@ module.exports = class Usage extends Command {
   async run(message, [key, ...args]) {
     const userModel = require('../../../lib/models/User');
     const { Sentry } = require('../../events/ready');
-    const fetch = require('node-fetch');
+    const { JotForm } = require('../../../jotform-sdk');
 
     try {
       const user = await userModel.findOne({ userId: message.author.id });
@@ -26,15 +26,12 @@ module.exports = class Usage extends Command {
 
       const apiKey = await user.decryptKey(user.apiKey);
 
-      await fetch('https://api.jotform.com/user/usage', {
-        method: 'GET',
-        headers: {
-          APIKEY: apiKey,
-        },
-      })
-        .then((res) => res.json())
+      const JF = new JotForm();
+      JF.setApiKey(apiKey);
+
+      await JF.user
+        .getUsage()
         .then((res) => {
-          console.log(res);
           return message.channel.send(
             Embed.success('Here is your monthly usage.')
               .setAuthor('Usage')
@@ -58,6 +55,13 @@ module.exports = class Usage extends Command {
                   value: res.content.payments,
                 }
               )
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+          Sentry.captureException(err);
+          return message.channel.send(
+            Embed.error('\u274E Something went wrong, try again later.')
           );
         });
     } catch (err) {

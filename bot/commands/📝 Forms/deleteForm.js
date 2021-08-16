@@ -59,6 +59,7 @@ module.exports = class deleteForm extends Command {
         })
         .catch((err) => {
           console.log(err);
+          Sentry.captureException(err);
           return message.channel.send(
             Embed.error(
               '\u274E Something went wrong. Please try again.'

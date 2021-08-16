@@ -88,6 +88,7 @@ module.exports = class CreateForm extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -160,6 +161,7 @@ module.exports = class CreateForm extends Command {
             }
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -206,6 +208,7 @@ module.exports = class CreateForm extends Command {
             }
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -252,6 +255,7 @@ module.exports = class CreateForm extends Command {
             }
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -277,6 +281,7 @@ module.exports = class CreateForm extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -304,6 +309,7 @@ module.exports = class CreateForm extends Command {
             value = await reply.first().content;
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -335,6 +341,7 @@ module.exports = class CreateForm extends Command {
             }
           })
           .catch(async (err) => {
+            Sentry.captureException(err);
             await message.author.send(
               Embed.error('\u274E Something went wrong, lets try again.')
             );
@@ -483,13 +490,13 @@ module.exports = class CreateForm extends Command {
                       .setColor('#44c902')
                   );
                 })
-                .catch((error) => {
-                  console.log(error);
+                .catch((err) => {
+                  console.log(err);
+                  Sentry.captureException(err);
                   return questionMsg.reply(
                     Embed.error('\u274E Something went wrong, try again later.')
                   );
                 });
-              return;
             } else {
               createQuestion();
             }

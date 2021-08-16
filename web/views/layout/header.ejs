@@ -2,7 +2,7 @@
 
 <nav class="navbar">
   <!-- Navbar brand -->
-  <a href="https://jotform.com" class="navbar-brand ml-10 ml-sm-15">
+  <a href="/" class="navbar-brand ml-10 ml-sm-15">
     <img
       src="https://www.jotform.com/resources/assets/logo/jotform-icon-transparent-560x560.png"
       alt="JotForm"
@@ -48,5 +48,42 @@
     >
       <i class="far fa-moon" aria-hidden="true"></i>
     </button>
+
+    <div class="dropdown with-arrow hidden-md-and-up">
+      <button
+        class="btn navbar-menu-btn"
+        data-toggle="dropdown"
+        type="button"
+        id="navbar-dropdown-toggle-btn"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span class="text">Menu</span>
+        <i class="fa fa-angle-down" aria-hidden="true"></i>
+      </button>
+      <div
+        class="dropdown-menu dropdown-menu-right"
+        aria-labelledby="navbar-dropdown-toggle-btn"
+      >
+        <a href="/" class="dropdown-item">Home</a>
+        <a href="/commands" class="dropdown-item">Documentation</a>
+        <div class="dropdown-divider"></div>
+
+        <!-- GitLab button container start -->
+        <div class="dropdown-content">
+          <a
+            href="http://gitlab.com/bw3u/podo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://img.shields.io/badge/GitLab-AGPL--3.0-blue?url=https://gitlab.com/bw3u/podo&logo=gitlab&style=for-the-badge"
+              alt="gitlab-badge"
+            />
+          </a>
+        </div>
+        <!-- GitLab button container end -->
+      </div>
+    </div>
   </div>
 </nav>

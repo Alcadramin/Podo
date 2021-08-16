@@ -100,6 +100,7 @@ module.exports = class Login extends Command {
           })
           .catch((err) => {
             console.error(err);
+            Sentry.captureException(err);
             login.reply("You didn't answered in time, please start again.");
           });
 
@@ -174,14 +175,14 @@ module.exports = class Login extends Command {
                       );
                     });
                 })
-                .catch(async () => {
+                .catch(async (err) => {
+                  Sentry.captureException(err);
                   verifyApi.reply(
                     Embed.error(`${json.message}`)
                       .setAuthor('Error')
                       .addFields({
                         name: 'Error',
-                        value:
-                          ' \u274E Something went wrong. Please try again.',
+                        value: ' \u274E Something went wrong, lets try again.',
                         inline: false,
                       })
                   );

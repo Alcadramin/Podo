@@ -84,6 +84,7 @@ module.exports = class sendForm extends Command {
         })
         .catch((err) => {
           console.log(err);
+          Sentry.captureException(err);
           return message.channel.send(
             Embed.error(
               "\u2705 This form does not exist or doesn't belong to you!"
