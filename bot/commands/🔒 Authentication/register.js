@@ -67,7 +67,7 @@ module.exports = class Register extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getUsername();
@@ -94,7 +94,7 @@ module.exports = class Register extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getEmail();
@@ -121,7 +121,7 @@ module.exports = class Register extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getPassword();

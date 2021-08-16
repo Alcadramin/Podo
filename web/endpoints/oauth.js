@@ -2,7 +2,9 @@ const fetch = require('node-fetch');
 const redis = require('redis');
 const { Router } = require('express');
 
-const publisher = redis.createClient();
+const publisher = redis.createClient({
+  url: `${process.env.REDIS_URI}`,
+});
 
 publisher.on('error', (err) => {
   throw new Error(err);
@@ -66,7 +68,6 @@ router.get('/result', async (req, res, next) => {
             discordId,
           });
         } else {
-          console.log(json);
           res.redirect(`/oauth/login?discordId=${discordId}`);
         }
       });

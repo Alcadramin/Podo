@@ -1,12 +1,15 @@
 {
   "name": "jotform-discord-bot",
   "version": "1.0.0",
-  "description": "JotForm's Discord Bot to manage your forms! ",
+  "description": "JotForm's Discord Bot to manage your forms!",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "pretest": "prettier \"*/**/*.js\" --write",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint \"*/**/*.js\" --quiet",
+    "format": "prettier \"*/**/*.js\" --write",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:express": "cross-env NODE_ENV=production METHOD=express node --harmony index.js",
+    "start:nginx": "cross-env NODE_ENV=production METHOD=nginx node --harmony index.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +18,9 @@
   "keywords": [
     "JotForm",
     "JotForm Discord Bot",
-    "Discord"
+    "Discord",
+    "Podo Bot",
+    "Podo"
   ],
   "author": "bw3u",
   "license": "AGPL-3.0",
@@ -26,7 +31,6 @@
   "dependencies": {
     "@sentry/node": "^6.10.0",
     "@sentry/tracing": "^6.10.0",
-    "@types/mongoose": "^5.11.97",
     "@types/node": "^16.4.10",
     "ascii-table": "^0.0.9",
     "axios": "^0.21.1",
@@ -40,6 +44,7 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "helmet-csp": "^3.4.0",
+    "lodash": "^4.17.21",
     "mongoose": "^5.13.5",
     "morgan": "^1.10.0",
     "multer": "^1.4.3",
@@ -48,6 +53,7 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2"

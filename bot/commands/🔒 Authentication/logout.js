@@ -24,9 +24,9 @@ module.exports = class Logout extends Command {
         .catch((err) => {
           console.log(err);
           return message.channel.send(
-            Embed.error('Something went wrong. Please try again.').setAuthor(
-              'Error'
-            )
+            Embed.error(
+              ' \u274E Something went wrong. Please try again.'
+            ).setAuthor('Error')
           );
         });
     } catch (err) {

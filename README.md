@@ -3,11 +3,13 @@
 <br/ >
 </div>
 
-# Podo (JotForm's Discord Bot)
+#
+### Podo (JotForm's Discord Bot)
 
 Manage your surveys, application forms, community events and more over Discord with JotForm's powerful infrastructure. Developed under Podo's supervision!
 
-## Podo's Features 📝
+#
+### Podo's Features 📝
 
 - You can register to our platform or login to your existing Jotform account over Podo. (Discord DM's)
 - You can create beautiful forms, surveys with Podo's help!
@@ -43,7 +45,9 @@ Manage your surveys, application forms, community events and more over Discord w
 - You can automate your approval process via Web browser. (It's not possible via Discord unfortunately)
 - And more is waiting for you to explore!
 
-## Technical Features for Geeks 💠
+#
+### Technical Features for Geeks 💠
+
 
 - [x] Built-in cool and beautiful looking message embeds.
 - [x] Auto permission checks.
@@ -58,9 +62,10 @@ Manage your surveys, application forms, community events and more over Discord w
 <br/ >
 </div>
 
-## Development Environment
+#
+### Development Environment
 
-First of all install MongoDB locally or pass a development MongoDB database URI to `.env`.
+First of all install MongoDB and Redis locally or pass a development MongoDB & Redis URI to `.env`.
 
 - Create `.env` file. You can find the example in [.env.example](.env.example).
 - Install dependencies.
@@ -71,9 +76,24 @@ First of all install MongoDB locally or pass a development MongoDB database URI 
 
 `npm run dev`
 
-## Deployment
+- You can run in production mode with:
+  - `sudo npm run start:express` (You have to create a SSL certificate and set port to `80`. Please check [ready.js:112](bot/events/ready.js)) **Not Recommended! This is for testing porposes!**
+  - `npm run start:nginx` (Reverse proxy, you can find the configuration in [nginx.conf](nginx.conf))
 
-> TBA. (Docker or K8s we haven't decided yet 🐈)
+
+#
+### Deployment
+
+> Docker Compose
+
+- Create **`.env`** file carefully, accordingly to **`.env.example`**.
+  - `$ mv .env.example` `.env`
+  - `$ vim .env`
+- Edit **`nginx.conf`** for your taste.
+- Run:
+  - `$ docker-compose up --build`
+- If there is no issues you can run in detached mode with:
+  - `$ docker-compose up -d`
 
 ## License
 

@@ -38,7 +38,7 @@ module.exports = class MyForms extends Command {
           res.content.map((el) => {
             createEmbed.addField(
               `${el.title || 'No Title'} - ${el.status}`,
-              `${el.url}`
+              `${el.url} - **Form ID:** ${el.id}`
             );
           });
 
@@ -47,9 +47,9 @@ module.exports = class MyForms extends Command {
         .catch((err) => {
           console.log(err);
           return message.channel.send(
-            Embed.error('Something went wrong. Please try again.').setAuthor(
-              'Error'
-            )
+            Embed.error(
+              '\u274E Something went wrong. Please try again.'
+            ).setAuthor('Error')
           );
         });
     } catch (err) {

@@ -86,7 +86,7 @@ module.exports = class sendForm extends Command {
           console.log(err);
           return message.channel.send(
             Embed.error(
-              "  This form does not exist or doesn't belong to you!"
+              "\u2705 This form does not exist or doesn't belong to you!"
             ).setAuthor('Error')
           );
         });

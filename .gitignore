@@ -1,3 +1,4 @@
 node_modules/
 .env
 .vscode/
+web/public/.well-known/

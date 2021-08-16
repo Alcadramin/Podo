@@ -13,6 +13,8 @@ module.exports = class stopSubmissions extends Command {
     const submissionModel = require('../../../lib/models/SubmissionHooks');
     const { Sentry } = require('../../events/ready');
     const { JotForm } = require('../../../jotform-sdk');
+    const { isEmpty } = require('lodash');
+    require('dotenv').config();
 
     try {
       const user = await userModel.findOne({ userId: message.author.id });
@@ -33,14 +35,22 @@ module.exports = class stopSubmissions extends Command {
           userId: message.author.id,
         });
 
+        if (isEmpty(submissions)) {
+          return message.channel.send(
+            Embed.error(
+              'There is no form submissions to listen right now, you can add with: `!startsubmissions` command!'
+            ).setAuthor('Not Found')
+          );
+        }
+
         const createEmbed = await Embed.success(
           'I am currently listening these forms. Please give me the **Form ID** from which you want to stop receiving the submissions. '
-        ).setAuthor('List');
+        ).setAuthor('Form List');
 
         for (let i = 0; i < submissions.length; i++) {
           createEmbed.addField(
             submissions[i].formName || 'No Title',
-            `**Form ID:** ${submissions[i].formId}`
+            `https://form.jotform.com/${submissions[i].formId} - **Form ID:** ${submissions[i].formId}`
           );
         }
 
@@ -56,41 +66,51 @@ module.exports = class stopSubmissions extends Command {
         .getFormWebhooks(formId)
         .then((res) => {
           webhookId = Object.keys(res.content).find(
-            (key) => res.content[key] === 'http://195.174.236.242:1337/hooks'
+            (key) =>
+              res.content[key] ===
+              `${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${
+                process.env.DOMAIN
+              }/hooks`
           );
         })
-        .catch((err) => {
+        .catch(async (err) => {
           console.log(err);
+          await submissionModel.findOneAndDelete({
+            formId: formId,
+          });
+
           return message.channel.send(
-            Embed.error('Something went wrong. Please try again.').setAuthor(
-              'Error'
-            )
+            Embed.error(
+              "Seems your form is deleted or you don't have access to this form anymore. I am removing the submission collection."
+            ).setAuthor('Removed')
           );
         });
 
-      await JF.form
-        .deleteFormWebhook(formId, webhookId)
-        .then(async () => {
-          await submissionModel
-            .findOneAndDelete({
-              formId: formId,
-            })
-            .then(() => {
-              return message.channel.send(
-                Embed.success(
-                  'You will no longer receive submissions for this form.'
-                ).setAuthor('Success')
-              );
-            });
-        })
-        .catch((err) => {
-          console.log(err);
-          return message.channel.send(
-            Embed.error('Something went wrong. Please try again.').setAuthor(
-              'Error'
-            )
-          );
-        });
+      if (webhookId) {
+        await JF.form
+          .deleteFormWebhook(formId, webhookId)
+          .then(async () => {
+            await submissionModel
+              .findOneAndDelete({
+                formId: formId,
+              })
+              .then(() => {
+                return message.channel.send(
+                  Embed.success(
+                    'You will no longer receive submissions for this form.'
+                  ).setAuthor('Success')
+                );
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            return message.channel.send(
+              Embed.error(
+                '\u274E Something went wrong. Please try again.'
+              ).setAuthor('Error')
+            );
+          });
+      }
     } catch (err) {
       console.error(err);
       const errorId = Sentry.captureException(err);

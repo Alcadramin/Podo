@@ -1,0 +1,49 @@
+version: '2'
+services:
+  node:
+    build:
+      context: .
+      dockerfile: node.Dockerfile
+    volumes:
+      - ./:/home/node/podo
+    restart: always
+    command: 'npm run start:nginx'
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+      - mongodb
+    networks:
+      - nginx-proxy
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    volumes:
+      - ./:/home/node/podo
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - node
+    networks:
+      - nginx-proxy
+  redis:
+    container_name: redis
+    image: 'redis:latest'
+    ports:
+      - '6379'
+    restart: always
+    networks:
+      - nginx-proxy
+  mongodb:
+    container_name: mongodb
+    image: 'mongo:latest'
+    ports:
+      - '27017'
+    restart: always
+    networks:
+      - nginx-proxy
+
+networks:
+  nginx-proxy:

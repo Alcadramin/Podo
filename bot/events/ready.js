@@ -65,7 +65,11 @@ module.exports = class Ready extends BotEvent {
       })
     );
 
-    app.use(express.static(process.cwd() + '/web/public'));
+    app.use(
+      express.static(process.cwd() + '/web/public', {
+        dotfiles: 'allow',
+      })
+    );
     app.set('views', process.cwd() + '/web/views/');
     app.set('view engine', 'ejs');
     app.set('trust proxy', 1);
@@ -107,13 +111,67 @@ module.exports = class Ready extends BotEvent {
     app.use(errorHandler);
 
     // Start web services
-    const port = process.env.PORT || 1337;
+    const port = process.env.PORT;
 
-    app.listen(port, () => {
-      console.log(`🔶 Web services are listening on http://localhost:${port}.`);
+    if (process.env.NODE_ENV === 'development') {
+      app.listen(1337, () => {
+        console.log(
+          `🔶 Web services are listening on http://localhost:${port}. Or on http://${process.env.DOMAIN}.`
+        );
+      });
+    } else if (process.env.NODE_ENV === 'production') {
+      // Use Express and native HTTP & HTTPS services with Let's Encrypt SSL.
+      if (process.env.METHOD === 'express') {
+        const fs = require('fs');
+
+        const privateKey = fs.readFileSync(
+          `/etc/letsencrypt/live/${process.env.DOMAIN}/privkey.pem`,
+          'utf8'
+        );
+
+        const certificate = fs.readFileSync(
+          `/etc/letsencrypt/live/${process.env.DOMAIN}/cert.pem`,
+          'utf8'
+        );
+
+        const ca = fs.readFileSync(
+          `/etc/letsencrypt/live/${process.env.DOMAIN}/chain.pem`,
+          'utf8'
+        );
+
+        const credentials = {
+          key: privateKey,
+          cert: certificate,
+          ca: ca,
+        };
+
+        const http = require('http');
+        const https = require('https');
+
+        const httpServer = http.createServer(app);
+        const httpsServer = https.createServer(credentials, app);
+
+        httpServer.listen(80, () => {
+          console.log(`🔶 HTTP Server running on http://${process.env.DOMAIN}`);
+        });
+
+        httpsServer.listen(443, () => {
+          console.log(
+            `🔶 HTTPS Server running on https://${process.env.DOMAIN}`
+          );
+        });
+      } else if (process.env.METHOD === 'nginx') {
+        // Use NGINX Reverse Proxy. (recommended)
+        app.listen(port, () => {
+          `🔶 Web services are listening on https://${process.env.DOMAIN}:${port}`;
+        });
+      }
+    }
+
+    // Start Redis
+    const subscriber = await redis.createClient({
+      url: `${process.env.REDIS_URI}`,
     });
-
-    const subscriber = redis.createClient();
 
     subscriber.on('error', (err) => {
       throw new Error(err);
@@ -172,7 +230,10 @@ module.exports = class Ready extends BotEvent {
     subscriber.subscribe(['user-login', 'submission-hooks']);
     console.log('🔷 Redis subscriber is ready.');
 
-    const redisClient = redis.createClient();
+    const redisClient = await redis.createClient({
+      url: `${process.env.REDIS_URI}`,
+    });
+
     redisClient.on('error', (err) => {
       throw new Error(err);
     });

@@ -89,7 +89,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getOptions();
@@ -161,7 +161,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getQuestionType();
@@ -207,7 +207,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getQuestionType();
@@ -253,7 +253,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await isReadOnly();
@@ -278,7 +278,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getQuestionName();
@@ -305,7 +305,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getFormTitle();
@@ -336,7 +336,7 @@ module.exports = class CreateForm extends Command {
           })
           .catch(async (err) => {
             await message.author.send(
-              Embed.error('\u2705 Something went wrong, lets try again.')
+              Embed.error('\u274E Something went wrong, lets try again.')
             );
             console.log(err);
             await getFormSubtitle();
@@ -377,11 +377,11 @@ module.exports = class CreateForm extends Command {
           ).addFields(
             {
               name: 'Question Name',
-              value: questionName,
+              value: questionName || 'No Name',
             },
             {
               name: 'Question Type',
-              value: questionType,
+              value: questionType || 'No Type',
             },
             {
               name: 'Question Options',
@@ -389,11 +389,11 @@ module.exports = class CreateForm extends Command {
             },
             {
               name: 'Required?',
-              value: required,
+              value: required || 'Undefined',
             },
             {
               name: 'Read only?',
-              value: readOnly,
+              value: readOnly || 'Undefined',
             }
           )
         );
@@ -458,7 +458,7 @@ module.exports = class CreateForm extends Command {
                     title: formTitle || 'No Title',
                     height: '600',
                     thanktext:
-                      'Thank you, your submission has been received.! ✅',
+                      'Thank you, your submission has been received! ✅',
                     activeRedirect: 'thanktext',
                     styles: 'nova',
                     themeID: '5e6b428acc8c4e222d1beb91',
@@ -486,7 +486,7 @@ module.exports = class CreateForm extends Command {
                 .catch((error) => {
                   console.log(error);
                   return questionMsg.reply(
-                    Embed.error('\u2705 Something went wrong, try again later.')
+                    Embed.error('\u274E Something went wrong, try again later.')
                   );
                 });
               return;

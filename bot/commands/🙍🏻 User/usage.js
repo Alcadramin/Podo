@@ -26,8 +26,6 @@ module.exports = class Usage extends Command {
 
       const apiKey = await user.decryptKey(user.apiKey);
 
-      console.log(apiKey);
-
       await fetch('https://api.jotform.com/user/usage', {
         method: 'GET',
         headers: {

@@ -2,7 +2,14 @@ const { Router } = require('express');
 const multer = require('multer');
 const redis = require('redis');
 
-const publisher = redis.createClient();
+const publisher = redis.createClient({
+  url: `${process.env.REDIS_URI}`,
+});
+
+publisher.on('error', (err) => {
+  throw new Error(err);
+});
+
 const router = new Router();
 const upload = multer();
 

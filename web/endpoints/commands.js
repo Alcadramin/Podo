@@ -2,7 +2,9 @@ const { Router } = require('express');
 const redis = require('redis');
 const { promisify } = require('util');
 
-redisClient = redis.createClient();
+redisClient = redis.createClient({
+  url: `${process.env.REDIS_URI}`,
+});
 
 const router = new Router();
 module.exports = router;

@@ -180,7 +180,8 @@ module.exports = class Login extends Command {
                       .setAuthor('Error')
                       .addFields({
                         name: 'Error',
-                        value: 'Something went wrong. Please try again.',
+                        value:
+                          ' \u274E Something went wrong. Please try again.',
                         inline: false,
                       })
                   );
@@ -199,7 +200,9 @@ module.exports = class Login extends Command {
             .setAuthor('Login to JotForm')
             .addField(
               'Login:',
-              `http://localhost:1337/oauth/login?discordId=${message.author.id}`
+              `${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${
+                process.env.DOMAIN
+              }/oauth/login?discordId=${message.author.id}`
             )
         );
       };
