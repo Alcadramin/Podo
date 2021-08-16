@@ -77,7 +77,7 @@ First of all install MongoDB and Redis locally or pass a development MongoDB & R
 `npm run dev`
 
 - You can run in production mode with:
-  - `sudo npm run start:express` (You have to create a SSL certificate and set port to `80`. Please check [ready.js:112](bot/events/ready.js)) **Not Recommended! This is for testing porposes!**
+  - `sudo npm run start:express` (You have to create a SSL certificate. Please check [ready.js:124](https://gitlab.com/bw3u/podo/-/blob/main/bot/events/ready.js#L124)) **Not Recommended! This is for testing porposes!**
   - `npm run start:nginx` (Reverse proxy, you can find the configuration in [nginx.conf](nginx.conf))
 
 
@@ -92,7 +92,7 @@ First of all install MongoDB and Redis locally or pass a development MongoDB & R
 - Edit **`nginx.conf`** for your taste.
 - Run:
   - `$ docker-compose up --build`
-- If there is no issues you can run in detached mode with:
+- If there is no issue, you can run in detached mode with:
   - `$ docker-compose up -d`
 
 ## License
