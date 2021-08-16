@@ -40,6 +40,8 @@ services:
   mongodb:
     container_name: mongodb
     image: 'mongo:latest'
+    volumes:
+      - ./database:/data/db
     ports:
       - '27017'
     restart: always
