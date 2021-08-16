@@ -196,7 +196,9 @@ module.exports = class Ready extends BotEvent {
       } else if (process.env.METHOD === 'nginx') {
         // Use NGINX Reverse Proxy. (recommended)
         app.listen(port, () => {
-          `🔶 Web services are listening on https://${process.env.DOMAIN}:${port}`;
+          console.log(
+            `🔶 Web services are listening on https://${process.env.DOMAIN}:${port}`
+          );
         });
       }
     }
