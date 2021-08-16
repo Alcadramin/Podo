@@ -33,13 +33,13 @@ module.exports = class stopSubmissions extends Command {
           userId: message.author.id,
         });
 
-        const createEmbed = Embed.success(
+        const createEmbed = await Embed.success(
           'I am currently listening these forms. Please give me the **Form ID** from which you want to stop receiving the submissions. '
         ).setAuthor('List');
 
         for (let i = 0; i < submissions.length; i++) {
           createEmbed.addField(
-            submissions[i].formName,
+            submissions[i].formName || 'No Title',
             `**Form ID:** ${submissions[i].formId}`
           );
         }

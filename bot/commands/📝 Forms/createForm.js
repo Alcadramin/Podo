@@ -401,10 +401,10 @@ module.exports = class CreateForm extends Command {
         if (!isTitlePushed) {
           questions.push({
             type: 'control_head',
-            text: formTitle,
+            text: formTitle || '',
             order: order++,
             name: 'Header',
-            subHeader: formSubtitle,
+            subHeader: formSubtitle || '',
           });
 
           isTitlePushed = true;
@@ -455,11 +455,12 @@ module.exports = class CreateForm extends Command {
                 .createForms({
                   questions: questions,
                   properties: {
-                    pagetitle: formTitle,
+                    title: formTitle || 'No Title',
                     height: '600',
                     thanktext:
                       'Thank you, your submission has been received.! ✅',
                     activeRedirect: 'thanktext',
+                    styles: 'defaultV2',
                   },
                 })
                 .then((response) => {
