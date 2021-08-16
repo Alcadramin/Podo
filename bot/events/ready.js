@@ -221,7 +221,10 @@ module.exports = class Ready extends BotEvent {
             'New submission has arrived!'
           ).setAuthor(`${s.formTitle}`);
           for (let i = 0; i < questions.length; i++) {
-            createEmbed.addField(`${questions[i]}`, `${answers[i]}`);
+            createEmbed.addField(
+              `${questions[i] || 'Undefined'}`,
+              `${answers[i] || 'Undefined'}`
+            );
           }
           await hookChannel.send(createEmbed);
         }

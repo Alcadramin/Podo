@@ -1,13 +1,11 @@
-# Setup Node 14
-FROM node:14
+# Setup Node
+FROM node:14.17.4
 
-# Create  workdir, copy environment variables. (Port is set to 8080)
-USER node
-RUN mkdir -p /home/node/podo
+# Create  workdir, npm install, copy files. 
 WORKDIR /home/node/podo
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
 
-COPY --chown=node:node . .
-RUN npm install --only=prod
-
-# Expose the port.
+# Expose the port. (Port is set to 8080)
 EXPOSE 8080

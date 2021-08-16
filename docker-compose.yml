@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   node:
     build:
@@ -6,6 +6,7 @@ services:
       dockerfile: node.Dockerfile
     volumes:
       - ./:/home/node/podo
+      - /home/node/podo/node_modules
     restart: always
     command: 'npm run start:nginx'
     ports:

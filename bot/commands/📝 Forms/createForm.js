@@ -174,7 +174,7 @@ module.exports = class CreateForm extends Command {
         await form.reply(
           Embed.success('Is your question required?').addFields({
             name: 'Reply to me with one of these:',
-            value: 'Yes | No',
+            value: '**Yes** or **No**',
           })
         );
 
@@ -220,7 +220,7 @@ module.exports = class CreateForm extends Command {
         await form.reply(
           Embed.success('Is your question read only?').addFields({
             name: 'Reply to me with one of these:',
-            value: 'Yes | No',
+            value: '**Yes** or **No**',
           })
         );
 

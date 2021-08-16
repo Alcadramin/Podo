@@ -130,15 +130,49 @@ module.exports = class Register extends Command {
         return value;
       };
 
+      const getName = async () => {
+        await register.reply(
+          Embed.success('Please give me your firstname and sirname.').setAuthor(
+            'Name'
+          )
+        );
+
+        let value = '';
+
+        await register.channel
+          .awaitMessages(messageFilter, {
+            max: 1,
+            time: 60000,
+            errors: ['time'],
+          })
+          .then(async (reply) => {
+            value = await reply.first().content;
+          })
+          .catch(async (err) => {
+            await message.author.send(
+              Embed.error('\u274E Something went wrong, lets try again.')
+            );
+            console.log(err);
+            await getName();
+          });
+
+        return value;
+      };
+
       const startRegistration = async () => {
         const username = await getUsername();
         const email = await getEmail();
         const password = await getPassword();
+        const name = await getName();
 
         const registerDetails = await message.author.send(
           Embed.success('Here is your info, is this correct?')
             .setAuthor('Details')
             .addFields(
+              {
+                name: 'Firstname & Sirname',
+                value: name || 'Anonymous',
+              },
               {
                 name: 'Username',
                 value: username,
