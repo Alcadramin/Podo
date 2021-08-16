@@ -173,8 +173,9 @@ module.exports = class Register extends Command {
                   await registerDetails.reply(
                     Embed.success('You are successfully registered!').addFields(
                       {
-                        name: 'Verify Email',
-                        value: 'Please go to your inbox, verify your email.',
+                        name: 'Tips',
+                        value:
+                          'Please go to your inbox, verify your email, after that login with `!login` command.',
                       },
                       {
                         name: 'Email',

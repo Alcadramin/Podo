@@ -455,7 +455,7 @@ module.exports = class CreateForm extends Command {
                 .createForms({
                   questions: questions,
                   properties: {
-                    title: formTitle,
+                    pagetitle: formTitle,
                     height: '600',
                     thanktext:
                       'Thank you, your submission has been received.! ✅',
