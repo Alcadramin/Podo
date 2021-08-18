@@ -45,7 +45,7 @@ module.exports = class Login extends Command {
               inline: true,
             },
             {
-              name: 'Api Key (recommended)',
+              name: 'Api Key',
               value: 'React to 2️⃣ emoji',
               inline: true,
             }
@@ -182,7 +182,7 @@ module.exports = class Login extends Command {
                       .setAuthor('Error')
                       .addFields({
                         name: 'Error',
-                        value: ' \u274E Something went wrong, lets try again.',
+                        value: '\u274E Something went wrong, lets try again.',
                         inline: false,
                       })
                   );

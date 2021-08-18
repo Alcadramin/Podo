@@ -174,7 +174,7 @@ module.exports = class CreateForm extends Command {
 
       const isRequired = async () => {
         await form.reply(
-          Embed.success('Is your question required?').addFields({
+          Embed.success('Is your question **required**?').addFields({
             name: 'Reply to me with one of these:',
             value: '**Yes** or **No**',
           })
@@ -221,7 +221,7 @@ module.exports = class CreateForm extends Command {
 
       const isReadOnly = async () => {
         await form.reply(
-          Embed.success('Is your question read only?').addFields({
+          Embed.success('Is your question **read only**?').addFields({
             name: 'Reply to me with one of these:',
             value: '**Yes** or **No**',
           })
@@ -479,12 +479,16 @@ module.exports = class CreateForm extends Command {
                     )
                       .addFields(
                         {
-                          name: 'Submission URL (Submit answers from here.)',
+                          name: 'Form URL (Submit answers from here.)',
                           value: response.content.url,
                         },
                         {
-                          name: 'Editor URL (You can edit your from here.)',
+                          name: 'Editor URL (You can edit your form from here.)',
                           value: `https://www.jotform.com/build/${response.content.id}`,
+                        },
+                        {
+                          name: 'Submissions URL (You can check submissions from here.)',
+                          value: `https://www.jotform.com/tables/${response.content.id}`,
                         }
                       )
                       .setColor('#44c902')
@@ -494,7 +498,9 @@ module.exports = class CreateForm extends Command {
                   console.log(err);
                   Sentry.captureException(err);
                   return questionMsg.reply(
-                    Embed.error('\u274E Something went wrong, try again later.')
+                    Embed.error(
+                      '\u274E Something went wrong, try again later. Probably JotForm is super busy, it should recover as soon as possible.'
+                    )
                   );
                 });
             } else {

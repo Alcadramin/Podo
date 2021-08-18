@@ -12,6 +12,13 @@ module.exports = class Logout extends Command {
     const userModel = require('../../../lib/models/User');
 
     try {
+      const user = await userModel.findOne({ userId: message.author.id });
+      if (!user) {
+        return message.channel.send(
+          Embed.error('You are not logged in.').setAuthor('Error')
+        );
+      }
+
       await userModel
         .findOneAndDelete({ userId: message.author.id })
         .then(() => {
@@ -26,7 +33,7 @@ module.exports = class Logout extends Command {
           Sentry.captureException(err);
           return message.channel.send(
             Embed.error(
-              ' \u274E Something went wrong. Please try again.'
+              '\u274E Something went wrong. Please try again.'
             ).setAuthor('Error')
           );
         });

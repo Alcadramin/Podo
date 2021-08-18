@@ -20,7 +20,7 @@ Manage your surveys, application forms, community events and more over Discord w
 - 🤨 **You have a large community server and you are hosting an event for which you need applications.**
 - 🐱 Podo can help you create a beautiful form through **Discord** or create your own application form with over [10,000 templates](https://www.jotform.com/form-templates/), if you don't like any template, create your own design through our Form Builder!
 
-* 🤨 **You are looking for moderators/admins, but you can't you can't keep up with DM's.**
+* 🤨 **You are looking for moderators/admins, but you can't keep up with DM's.**
 * 🐱 You can easily create a form with Podo and can track realtime with [JotForm Tables](https://www.jotform.com/products/tables/) or on **Discord** as well!
 
 - 🤨 **You're a streamer and a great new game is out but you think it's not for your audience, you need their feedback.**
