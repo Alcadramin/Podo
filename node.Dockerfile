@@ -1,5 +1,5 @@
 # Setup Node
-FROM node:14.17.4
+FROM node:16.7.0
 
 # Create  workdir, npm install, copy files. 
 WORKDIR /home/node/podo

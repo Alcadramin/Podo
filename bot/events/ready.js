@@ -1,4 +1,3 @@
-const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const contentSecurityPolicy = require('helmet-csp');
@@ -7,6 +6,8 @@ const Tracing = require('@sentry/tracing');
 const express = require('express');
 const { json, urlencoded } = require('express');
 const redis = require('redis');
+const morgan = require('morgan');
+const helmet = require('helmet');
 
 const { BotEvent, Embed } = require('../../lib');
 const userModel = require('../../lib/models/User');
@@ -33,6 +34,8 @@ module.exports = class Ready extends BotEvent {
 
     const app = express();
 
+    // Middlewares
+    app.use(helmet());
     app.use((req, res, next) => {
       contentSecurityPolicy({
         useDefaults: true,
@@ -40,8 +43,7 @@ module.exports = class Ready extends BotEvent {
           defaultSrc: ['*'],
           scriptSrc: [
             "'self'",
-            "'unsafe-inline'",
-            "'unsafe-eval'",
+            "'sha256-obLOpSlNkPcr1N0t4TWMsMxlEfPVSVktnGYKHvOc+YA='",
             'https://www.jotform.com',
             'https://cdn.jsdelivr.net',
           ],
@@ -94,8 +96,11 @@ module.exports = class Ready extends BotEvent {
     app.use(Sentry.Handlers.requestHandler());
     app.use(Sentry.Handlers.tracingHandler());
 
-    app.use(logHander);
-    //app.use(helmet());
+    if (process.env.NODE_ENV === 'production') {
+      app.use(morgan('combined'));
+    } else {
+      app.use(logHander); // Fancy logging, causes mess in logs (if TTY doesn't support formatting), no need to use in production.
+    }
     app.use(cookieParser());
 
     app.use(json());
@@ -104,10 +109,10 @@ module.exports = class Ready extends BotEvent {
     // Endpoints should go here.
     mountRoutes(app);
 
-    // Middlewares should go here.
+    // Custom middlewares should go here.
     app.use(notFound);
-    app.use(Sentry.Handlers.errorHandler());
     app.use(errorHandler);
+    app.use(Sentry.Handlers.errorHandler());
 
     // Start web services
     const port = process.env.PORT;

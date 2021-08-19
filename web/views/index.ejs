@@ -12,6 +12,7 @@
       <%- include('./layout/header'); %>
 
       <div class="content-wrapper">
+        <div class="sticky-alerts"></div>
         <div class="d-flex justify-content-center">
           <div class="w-800 mw-full">
             <div class="card p-0">
@@ -166,6 +167,33 @@
       </div>
 
       <%- include('./layout/footer'); %>
+
+      <script>
+        // Toasts
+        const status = '<%= status %>';
+
+        if (status === 'loggedIn') {
+          halfmoon.initStickyAlert({
+            content:
+              'You are already logged in! You can logout using the <span class="text-muted">!logout</span> command in Discord.',
+            title: 'Already logged in.',
+            alertType: 'alert-success',
+            fillType: 'filled-lm',
+            timeShown: 15000,
+          });
+        }
+
+        if (status === 'missingId') {
+          halfmoon.initStickyAlert({
+            content:
+              'Looks like Podo forgot to tell me your Discord ID. Please try logging in via Discord. ',
+            title: 'Oops.',
+            alertType: 'alert-danger',
+            fillType: 'filled-lm',
+            timeShown: 15000,
+          });
+        }
+      </script>
     </div>
   </body>
 </html>
