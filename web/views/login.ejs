@@ -13,6 +13,7 @@
       <%- include('./layout/header'); %>
 
       <div class="content-wrapper">
+        <div class="sticky-alerts"></div>
         <div class="d-flex justify-content-center">
           <div class="w-600 mw-full">
             <div class="card p-0">
@@ -54,14 +55,36 @@
 
       loginButton.addEventListener('click', loginJotForm);
 
-      let apiKey = '';
-
       async function loginJotForm() {
         await JF.login(async function () {
-          apiKey = await JF.getAPIKey();
+          const apiKey = await JF.getAPIKey();
           window.location.replace(
             `/oauth/result?apiKey=${apiKey}&discordId=${discordId}`
           );
+        });
+      }
+
+      // Toasts
+      const status = '<%= status %>';
+      if (status === 'missingKey') {
+        halfmoon.initStickyAlert({
+          content:
+            "Looks like we couldn't obtain your API Key. Please try logging in.",
+          title: 'Oops.',
+          alertType: 'alert-error',
+          fillType: 'filled-lm',
+          timeShown: 15000,
+        });
+      }
+
+      if (status === 'unauthorized') {
+        halfmoon.initStickyAlert({
+          content:
+            'We are unable to authorize your account, this error is probably related to <strong>Jotform</strong> services. Try again later. ',
+          title: 'Oops.',
+          alertType: 'alert-danger',
+          fillType: 'filled-lm',
+          timeShown: 15000,
         });
       }
     </script>

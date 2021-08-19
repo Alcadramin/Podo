@@ -1,4 +1,3 @@
-const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const contentSecurityPolicy = require('helmet-csp');
@@ -7,6 +6,7 @@ const Tracing = require('@sentry/tracing');
 const express = require('express');
 const { json, urlencoded } = require('express');
 const redis = require('redis');
+const morgan = require('morgan');
 
 const { BotEvent, Embed } = require('../../lib');
 const userModel = require('../../lib/models/User');
@@ -94,8 +94,11 @@ module.exports = class Ready extends BotEvent {
     app.use(Sentry.Handlers.requestHandler());
     app.use(Sentry.Handlers.tracingHandler());
 
-    app.use(logHander);
-    //app.use(helmet());
+    if (process.env.NODE_ENV === 'production') {
+      app.use(morgan('combined'));
+    } else {
+      app.use(logHander); // Fancy logging, causes mess in logs (if TTY doesn't support formatting), no need to use in production.
+    }
     app.use(cookieParser());
 
     app.use(json());

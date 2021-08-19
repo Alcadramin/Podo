@@ -47,16 +47,5 @@
 
       <%- include('./layout/footer'); %>
     </div>
-
-    <script>
-      const apiKey = '<%= apiKey %>';
-      const discordId = '<%= apiKey %>';
-
-      if (!apiKey) {
-        window.location.replace(`/oauth/login?discordId=${discordId}`);
-      } else {
-        window.localStorage.setItem('apiKey', apiKey);
-      }
-    </script>
   </body>
 </html>
