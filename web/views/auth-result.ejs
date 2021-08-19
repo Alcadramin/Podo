@@ -34,7 +34,7 @@
                   <button
                     class="btn btn-success btn-sm"
                     type="button"
-                    onclick="window.location.replace('/')"
+                    id="home"
                   >
                     Go Home
                   </button>
@@ -46,6 +46,15 @@
       </div>
 
       <%- include('./layout/footer'); %>
+      <script>
+        const homeButton = document.querySelector('#home');
+
+        homeButton.addEventListener('click', toHome);
+
+        async function toHome() {
+          window.location.replace('/');
+        }
+      </script>
     </div>
   </body>
 </html>

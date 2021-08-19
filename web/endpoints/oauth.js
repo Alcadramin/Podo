@@ -79,8 +79,6 @@ router.get('/result', async (req, res, next) => {
           nav: 'result',
           status: 'success',
           name: result.content.name,
-          apiKey,
-          discordId,
         });
       })
       .catch(() => {

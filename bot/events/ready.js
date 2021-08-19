@@ -36,6 +36,7 @@ module.exports = class Ready extends BotEvent {
 
     // Middlewares
     app.use(helmet());
+
     app.use((req, res, next) => {
       contentSecurityPolicy({
         useDefaults: true,
@@ -43,7 +44,7 @@ module.exports = class Ready extends BotEvent {
           defaultSrc: ['*'],
           scriptSrc: [
             "'self'",
-            "'sha256-obLOpSlNkPcr1N0t4TWMsMxlEfPVSVktnGYKHvOc+YA='",
+            "'unsafe-inline'",
             'https://www.jotform.com',
             'https://cdn.jsdelivr.net',
           ],
